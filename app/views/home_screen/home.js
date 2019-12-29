@@ -788,8 +788,8 @@ export default class HomeScreen extends Component {
 
 
     var role = this.state.isUserLookingPT
-      ? "Clients"
-      : "Trainers";
+      ? "Trainers"
+      : "Clients";
 
 
 
