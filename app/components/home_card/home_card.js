@@ -258,6 +258,7 @@ class HomeCard extends Component {
                  onPress={this.crossUser}
 
                 style={{
+                  
                    marginBottom: 10, backgroundColor: '#e2e2e2', height: 50, width: 50, justifyContent: 'center', alignItems: 'center',
 
                   borderRadius: 10,
@@ -274,7 +275,7 @@ class HomeCard extends Component {
 
               </TouchableOpacity>
 
-              <View style={{backgroundColor: '#e2e2e2', width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 10, }}>
+              <View style={{marginBottom:10,backgroundColor: '#e2e2e2', width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 10, }}>
                 <Text style={styles.priceFont}>{this.props.price === '$undefined' ? 0 : this.props.price}</Text>
               </View>
 
