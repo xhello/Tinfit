@@ -23,6 +23,7 @@ import { NavigationEvents } from "react-navigation";
 import SnackBar from "react-native-snackbar-component";
 
 import styles from "./style";
+import MapScreen from "../map_screen/MapScreen";
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -42,6 +43,7 @@ export default class HomeScreen extends Component {
       crossedUser: [],
       userLat: 0,
       userLon: 0,
+      mapScreen: false
     };
   }
   static navigationOptions = ({ navigation }) => {
@@ -55,18 +57,33 @@ export default class HomeScreen extends Component {
         backgroundColor: colors.header
       },
       headerLeft: <DrawerIcon />,
-      headerRight: navigation.getParam("isUserLookingPT") ? (
-        // <Switch
-        //   onValueChange={() => navigation.getParam("showMessagedUsers")()}
-        //   value={navigation.getParam("switchValue")}
-        //   style={{
-        //     marginRight: 15
-        //   }}
-        // />
-        <View />
-      ) : (
-          <View />
-        )
+      headerRight:
+        <Switch
+          onValueChange={() => {
+            navigation.setParams({
+              switchValue: !navigation.getParam("switchValue"),
+
+            })
+            navigation.getParam("renderMap")()
+          }}
+          value={navigation.getParam("switchValue")}
+          style={{
+            marginRight: 15
+          }}
+        />
+      // navigation.getParam("isUserLookingPT") ? (
+      //   // <Switch
+      //   //   onValueChange={() => navigation.getParam("showMessagedUsers")()}
+      //   //   value={navigation.getParam("switchValue")}
+      //   //   style={{
+      //   //     marginRight: 15
+      //   //   }}
+      //   // />
+
+      //   <View />
+      // ) : (
+      //     <View />
+      //   )
     };
   };
   // componentWillMount() {
@@ -79,6 +96,11 @@ export default class HomeScreen extends Component {
   onTabFocus = () => {
     this.setState({
       isLoading: true
+    }, () => {
+      this.props.navigation.setParams({
+        switchValue: false,
+        renderMap: this.renderMap
+      });
     });
     this.readChangeData();
   };
@@ -907,6 +929,7 @@ export default class HomeScreen extends Component {
       />
     );
   };
+
   renderEmptyContainer = () => {
     return (
       <View style={styles.notFoundMessage} refreshing={this.state.isRefreshing} onRefresh={() => this.readChangeData()}>
@@ -915,32 +938,50 @@ export default class HomeScreen extends Component {
       </View>
     )
   }
+
+
+
+  renderMap = () => {
+    this.setState({ mapScreen: !this.state.mapScreen, })
+  }
+
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <NavigationEvents onWillFocus={this.onTabFocus} />
-        <Spinner
-          visible={this.state.isLoading}
-          textContent={"Loading ..."}
-          textStyle={styles.spinnerTextStyle}
-          color={"#FE007A"}
-        />
-        <SnackBar
-          visible={this.state.isShowError}
-          autoHidingTime={2000}
-          backgroundColor={this.state.snackColor}
-          textMessage={this.state.errorToShow}
-        />
-        <FlatList
-          data={this.state.userList}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.user.uid}
-          onRefresh={() => this.readChangeData()}
-          refreshing={this.state.isRefreshing}
-          showsVerticalScrollIndicator={false}
-          style={styles.listView}
-          ListEmptyComponent={this.renderEmptyContainer()}
-        />
+
+        {this.state.mapScreen ? (
+          <MapScreen lat={this.state.userLat} lng={this.state.userLon} />
+        )
+          :
+          (
+            <View>
+              <Spinner
+                visible={this.state.isLoading}
+                textContent={"Loading ..."}
+                textStyle={styles.spinnerTextStyle}
+                color={"#FE007A"}
+              />
+              <SnackBar
+                visible={this.state.isShowError}
+                autoHidingTime={2000}
+                backgroundColor={this.state.snackColor}
+                textMessage={this.state.errorToShow}
+              />
+              <FlatList
+                data={this.state.userList}
+                renderItem={this.renderItem}
+                keyExtractor={item => item.user.uid}
+                onRefresh={() => this.readChangeData()}
+                refreshing={this.state.isRefreshing}
+                showsVerticalScrollIndicator={false}
+                style={styles.listView}
+                ListEmptyComponent={this.renderEmptyContainer()}
+              />
+            </View>
+          )}
+
         <Dialog.Container visible={this.state.isMessageSendingMode}>
           <Dialog.Title>Send message with request</Dialog.Title>
           <Dialog.Description>
