@@ -18,6 +18,7 @@ import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage; 
 
 
 import java.util.Arrays;
@@ -45,7 +46,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNGestureHandlerPackage(),
             new RNFirebaseMessagingPackage(),
             new RNFusedLocationPackage(),
-            new RNFirebaseStoragePackage()
+            new RNFirebaseStoragePackage(),
+            new RNFirebaseNotificationsPackage() 
       );
     }
 

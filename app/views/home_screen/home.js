@@ -84,14 +84,23 @@ export default class HomeScreen extends Component {
   };
 
   componentDidMount() {
+    firebase.notifications().setBadge(8)
     // this.messageListener = firebase.messaging().onMessage((RemoteMessage) => {
     //   // Process your message as required
     //   console.warn("########--------", RemoteMessage);
     //   this._showSnackBar(RemoteMessage._data.body, "green");
     // });
-    // //   this.notificationListener = firebase.notifications().onNotification((Notification) => {
-    // //     console.warn("########--------", Notification);
-    // // });
+    this.notificationListener = firebase.notifications().onNotification((Notification) => {
+      console.warn("########--------", Notification);
+    });
+
+    firebase.notifications().onNotification(async (notif) => {
+      const badgeCount = await firebase.notifications().getBadge();
+      notif.android.setChannelId('app-infos');
+      firebase.notifications().displayNotification(notif);
+      firebase.notifications().setBadge(badgeCount + 1);
+    });
+
     firebase
       .messaging()
       .hasPermission()
@@ -132,31 +141,31 @@ export default class HomeScreen extends Component {
       ? "Clients"
       : "Trainers";
 
-    
-      firebase
-        .database()
-        .ref()
-        .child(
-          "users/" +
-          this.state.user.uid +
-          `/ignore/${role}`
-        )
-        .once(
-          "value",
-          snapshot => {
-            const removedUser = _.map(snapshot.val(), user => {
-              console.log("Ignored User: ", user)
-              return { user }
 
-            })
-            console.log("Ignored User: ", removedUser)
-            this.setState({ crossedUser: removedUser })
+    firebase
+      .database()
+      .ref()
+      .child(
+        "users/" +
+        this.state.user.uid +
+        `/ignore/${role}`
+      )
+      .once(
+        "value",
+        snapshot => {
+          const removedUser = _.map(snapshot.val(), user => {
+            console.log("Ignored User: ", user)
+            return { user }
+
           })
+          console.log("Ignored User: ", removedUser)
+          this.setState({ crossedUser: removedUser })
+        })
 
 
 
-    } 
-  
+  }
+
   // componentWillUnmount() {
   //   this.messageListener();
   // }
@@ -391,7 +400,7 @@ export default class HomeScreen extends Component {
               "value",
               snapshot => {
 
-               
+
                 const requestedUsers = _.map(snapshot.val(), user => {
                   return { user };
                 });
@@ -814,107 +823,107 @@ export default class HomeScreen extends Component {
 
   }
 
-submitMessage = () => {
-  console.warn("submitMessage");
-  this.sendMessage(this.state.selectedUserIdToMessage, this.state.selectedUserFCMKey, this.state.selectedUserName, this.state.selectedUserCurrentPrice);
-  this.setState({
-    isMessageSendingMode: false
-  });
-};
-renderItem = ({ item }) => {
-  console.log("#####################@@@@@@@@@@@@@ - ", item.user.myTrainerProfile.price);
-  var ratingToShow = 0;
-  if (this.state.isUserLookingPT) {
-    if (item.user.myTrainerProfile != undefined) {
-      console.log("#####################@@@@@@@@@@@@@****** - ");
-      ratingToShow = item.user.myTrainerProfile.rating != null ? item.user.myTrainerProfile.rating : 0
-    }
-  } else {
-    if (item.user.myClientProfile != undefined) {
-      ratingToShow = item.user.myClientProfile.rating != null ? item.user.myClientProfile.rating : 0
-    }
-  }
-  if (this.state.isUserLookingPT) {
-    var price = item.user.myTrainerProfile.price
-  } else {
-    var price = item.user.myClientProfile.price
-  }
-  return (
-
-    <HomeCard
-      onPressPhoto={() => this.didTapPhoto(item.user.uid, this.state.user.uid, price)}
-      onPressRequest={() => this.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
-      onPressMessage={() => this.didTapMessageButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
-      onPressCrossUser={() => this.crossUser(item.user.uid, this.state.user.uid)}
-
-
-
-
-      userImage={
-        item.user.photoURL
-          ? { uri: item.user.photoURL }
-          : require("../../res/images/default_user.png")
+  submitMessage = () => {
+    console.warn("submitMessage");
+    this.sendMessage(this.state.selectedUserIdToMessage, this.state.selectedUserFCMKey, this.state.selectedUserName, this.state.selectedUserCurrentPrice);
+    this.setState({
+      isMessageSendingMode: false
+    });
+  };
+  renderItem = ({ item }) => {
+    console.log("#####################@@@@@@@@@@@@@ - ", item.user.myTrainerProfile.price);
+    var ratingToShow = 0;
+    if (this.state.isUserLookingPT) {
+      if (item.user.myTrainerProfile != undefined) {
+        console.log("#####################@@@@@@@@@@@@@****** - ");
+        ratingToShow = item.user.myTrainerProfile.rating != null ? item.user.myTrainerProfile.rating : 0
       }
-      name={item.user.displayName}
-      isGymEnable={item.user.isGymAccess}
-      rating={ratingToShow}
-      isClientListing={!this.state.isUserLookingPT}
-      price={"$" + price}
-      messageText={item.user.message}
-      isShowMessage={!this.state.isShowAllUsers}
-    />
-  );
-};
-renderEmptyContainer = () => {
-  return (
-    <View style={styles.notFoundMessage} refreshing={this.state.isRefreshing} onRefresh={() => this.readChangeData()}>
-      <Text style={styles.notFoundMessageFont}>No users found with your settings,</Text>
-      <Text style={styles.notFoundMessageFont}>Change your price, distance and try again</Text>
-    </View>
-  )
-}
-render() {
-  return (
-    <SafeAreaView style={styles.container}>
-      <NavigationEvents onWillFocus={this.onTabFocus} />
-      <Spinner
-        visible={this.state.isLoading}
-        textContent={"Loading ..."}
-        textStyle={styles.spinnerTextStyle}
-        color={"#FE007A"}
+    } else {
+      if (item.user.myClientProfile != undefined) {
+        ratingToShow = item.user.myClientProfile.rating != null ? item.user.myClientProfile.rating : 0
+      }
+    }
+    if (this.state.isUserLookingPT) {
+      var price = item.user.myTrainerProfile.price
+    } else {
+      var price = item.user.myClientProfile.price
+    }
+    return (
+
+      <HomeCard
+        onPressPhoto={() => this.didTapPhoto(item.user.uid, this.state.user.uid, price)}
+        onPressRequest={() => this.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
+        onPressMessage={() => this.didTapMessageButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
+        onPressCrossUser={() => this.crossUser(item.user.uid, this.state.user.uid)}
+
+
+
+
+        userImage={
+          item.user.photoURL
+            ? { uri: item.user.photoURL }
+            : require("../../res/images/default_user.png")
+        }
+        name={item.user.displayName}
+        isGymEnable={item.user.isGymAccess}
+        rating={ratingToShow}
+        isClientListing={!this.state.isUserLookingPT}
+        price={"$" + price}
+        messageText={item.user.message}
+        isShowMessage={!this.state.isShowAllUsers}
       />
-      <SnackBar
-        visible={this.state.isShowError}
-        autoHidingTime={2000}
-        backgroundColor={this.state.snackColor}
-        textMessage={this.state.errorToShow}
-      />
-      <FlatList
-        data={this.state.userList}
-        renderItem={this.renderItem}
-        keyExtractor={item => item.user.uid}
-        onRefresh={() => this.readChangeData()}
-        refreshing={this.state.isRefreshing}
-        showsVerticalScrollIndicator={false}
-        style={styles.listView}
-        ListEmptyComponent={this.renderEmptyContainer()}
-      />
-      <Dialog.Container visible={this.state.isMessageSendingMode}>
-        <Dialog.Title>Send message with request</Dialog.Title>
-        <Dialog.Description>
-          Enter your message to your client
+    );
+  };
+  renderEmptyContainer = () => {
+    return (
+      <View style={styles.notFoundMessage} refreshing={this.state.isRefreshing} onRefresh={() => this.readChangeData()}>
+        <Text style={styles.notFoundMessageFont}>No users found with your settings,</Text>
+        <Text style={styles.notFoundMessageFont}>Change your price, distance and try again</Text>
+      </View>
+    )
+  }
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <NavigationEvents onWillFocus={this.onTabFocus} />
+        <Spinner
+          visible={this.state.isLoading}
+          textContent={"Loading ..."}
+          textStyle={styles.spinnerTextStyle}
+          color={"#FE007A"}
+        />
+        <SnackBar
+          visible={this.state.isShowError}
+          autoHidingTime={2000}
+          backgroundColor={this.state.snackColor}
+          textMessage={this.state.errorToShow}
+        />
+        <FlatList
+          data={this.state.userList}
+          renderItem={this.renderItem}
+          keyExtractor={item => item.user.uid}
+          onRefresh={() => this.readChangeData()}
+          refreshing={this.state.isRefreshing}
+          showsVerticalScrollIndicator={false}
+          style={styles.listView}
+          ListEmptyComponent={this.renderEmptyContainer()}
+        />
+        <Dialog.Container visible={this.state.isMessageSendingMode}>
+          <Dialog.Title>Send message with request</Dialog.Title>
+          <Dialog.Description>
+            Enter your message to your client
           </Dialog.Description>
-        <Dialog.Input
-          onChangeText={textMessage => this.setState({ textMessage })}
-          value={this.state.textMessage}
-        />
-        <Dialog.Button
-          label="Cancel"
-          onPress={() => this.setState({ isMessageSendingMode: false })}
-        />
-        <Dialog.Button label="Request" onPress={this.submitMessage} />
-      </Dialog.Container>
-    </SafeAreaView>
-  );
-}
+          <Dialog.Input
+            onChangeText={textMessage => this.setState({ textMessage })}
+            value={this.state.textMessage}
+          />
+          <Dialog.Button
+            label="Cancel"
+            onPress={() => this.setState({ isMessageSendingMode: false })}
+          />
+          <Dialog.Button label="Request" onPress={this.submitMessage} />
+        </Dialog.Container>
+      </SafeAreaView>
+    );
+  }
 }

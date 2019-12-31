@@ -6,17 +6,13 @@
  * @flow
  */
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,PushNotificationIOS} from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View, } from 'react-native';
 import DrawerNav from "./app/navigation/drawer_navigation";
 //console.disableYellowBox = true;
 export default class App extends Component {
   constructor(props) {
     super(props);
-    if(Platform.OS==="ios"){
-      // PushNotificationIOS.setApplicationIconBadgeNumber(10);
-
-    }
     this.state = {
       loggedInUser: {
 
@@ -25,7 +21,7 @@ export default class App extends Component {
   }
 
   render() {
-    return <DrawerNav screenProps={this.state.loggedInUser}/>;
+    return <DrawerNav screenProps={this.state.loggedInUser} />;
   }
 }
 
