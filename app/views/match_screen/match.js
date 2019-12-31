@@ -303,12 +303,14 @@ export default class MatchScreen extends Component {
         }
       });
     }
+    let unreadCount = 0;
 
     let user = firebase.auth().currentUser;
     for (let i = 0; i < trainerList.length; i++) {
       let unreadMessages = await firebase.database().ref().child('/conversations/' + user.uid + '/' + trainerList[i].uid + '/unread').once('value')
       if (unreadMessages) {
-        trainerList[i].unread = unreadMessages;
+        trainerList[i].unread = unreadMessages.val();
+        unreadCount += parseInt(unreadMessages.val())
       }
       else {
         trainerList[i].unread = 0;
@@ -320,6 +322,8 @@ export default class MatchScreen extends Component {
       let unreadMessages = await firebase.database().ref().child('/conversations/' + user.uid + '/' + clientList[i].uid + '/unread').once('value')
       if (unreadMessages.val()) {
         clientList[i].unread = unreadMessages.val();
+        unreadCount += parseInt(unreadMessages.val())
+
       }
       else {
         clientList[i].unread = 0;
@@ -327,6 +331,7 @@ export default class MatchScreen extends Component {
       }
     }
 
+    firebase.notifications().setBadge(unreadCount)
     console.warn(clientList, trainerList)
 
     this.setState({

@@ -84,23 +84,25 @@ export default class HomeScreen extends Component {
   };
 
   componentDidMount() {
-    firebase.notifications().setBadge(8)
-    // this.messageListener = firebase.messaging().onMessage((RemoteMessage) => {
-    //   // Process your message as required
-    //   console.warn("########--------", RemoteMessage);
-    //   this._showSnackBar(RemoteMessage._data.body, "green");
+
+
+    // this.notificationListener = firebase.notifications().onNotification((Notification) => {
+    //   console.warn("########--------", Notification);
+    //   firebase.notifications().setBadge(parseInt(firebase.notifications().getBadge()) + 1)
+
     // });
-    this.notificationListener = firebase.notifications().onNotification((Notification) => {
-      console.warn("########--------", Notification);
-    });
 
-    firebase.notifications().onNotification(async (notif) => {
-      const badgeCount = await firebase.notifications().getBadge();
-      notif.android.setChannelId('app-infos');
-      firebase.notifications().displayNotification(notif);
-      firebase.notifications().setBadge(badgeCount + 1);
-    });
+    // firebase.notifications().onNotificationOpened((notification) => {
+    //   firebase.notifications().setBadge(parseInt(firebase.notifications().getBadge()) + 1)
 
+    // })
+
+
+    firebase.notifications().onNotification((notification) => {
+      console.warn(firebase.notifications().getBadge())
+      firebase.notifications().setBadge(1000)
+
+    })
     firebase
       .messaging()
       .hasPermission()
@@ -121,6 +123,7 @@ export default class HomeScreen extends Component {
               .then(() => {
                 console.log("########### PERMISSION GAVE for NOTIFICATIONS");
                 this.getToken();
+
               })
               .catch(error => {
                 console.log("########### NO PERMISSION GAVE for NOTIFICATIONS");
@@ -136,6 +139,24 @@ export default class HomeScreen extends Component {
 
   }
 
+
+  getUnreadMessageCount = () => {
+    firebase.database().ref()
+      .child("conversations/" + this.state.user.uid).on('value', snap => {
+        let totalUnreadCount = 0;
+        console.warn(snap.val())
+        if (snap.val()) {
+          let keys = Object.keys(snap.val())
+          console.warn(keys)
+          for (let i = 0; i < keys.length; i++) {
+            if (snap.val()[keys[i]].unread) {
+              totalUnreadCount += parseInt(snap.val()[keys[i]].unread)
+            }
+          }
+        }
+        firebase.notifications().setBadge(totalUnreadCount)
+      })
+  }
   getCrossedUsers = () => {
     var role = !this.state.isUserLookingPT
       ? "Clients"
@@ -321,6 +342,8 @@ export default class HomeScreen extends Component {
         this.updateUserLocation();
         // this.getHomeData();
         this.getCrossedUsers();
+        this.getUnreadMessageCount();
+
       }
     );
   };
