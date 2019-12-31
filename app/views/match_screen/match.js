@@ -5,7 +5,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image
+  Image,
+  ImageBackground
 } from "react-native";
 import { NavigationEvents } from "react-navigation";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -205,7 +206,7 @@ export default class MatchScreen extends Component {
     });
   };
 
-  createMatchedUsers = () => {
+  createMatchedUsers = async () => {
     // console.warn("createMatchedUsers");
     const requestedTrainerList = this.state.requestedTrainerList;
     const requestedClientList = this.state.requestedClientList;
@@ -223,7 +224,7 @@ export default class MatchScreen extends Component {
 
     const matchingTrainerUsersTemp = _.intersectionBy(
       this.state.requestedTrainerList,
-      this.state.requestedBackTrainerList,      
+      this.state.requestedBackTrainerList,
       "uid"
     );
 
@@ -303,6 +304,31 @@ export default class MatchScreen extends Component {
       });
     }
 
+    let user = firebase.auth().currentUser;
+    for (let i = 0; i < trainerList.length; i++) {
+      let unreadMessages = await firebase.database().ref().child('/conversations/' + user.uid + '/' + trainerList[i].uid + '/unread').once('value')
+      if (unreadMessages) {
+        trainerList[i].unread = unreadMessages;
+      }
+      else {
+        trainerList[i].unread = 0;
+
+      }
+    }
+
+    for (let i = 0; i < clientList.length; i++) {
+      let unreadMessages = await firebase.database().ref().child('/conversations/' + user.uid + '/' + clientList[i].uid + '/unread').once('value')
+      if (unreadMessages.val()) {
+        clientList[i].unread = unreadMessages.val();
+      }
+      else {
+        clientList[i].unread = 0;
+
+      }
+    }
+
+    console.warn(clientList, trainerList)
+
     this.setState({
       trainerList: trainerList,
       clientList: clientList,
@@ -323,14 +349,28 @@ export default class MatchScreen extends Component {
         onPress={() => this.didTapPhoto(item.uid, item.displayName, item.photoURL, item.userCode, item.userCodeToRequest, item.userListedIn)}
       >
         <View style={styles.cardViewLeftSideArea}>
-          <Image
+
+          <ImageBackground
             source={
               item.photoURL == null
                 ? this.state.userImageToDisplay
                 : { uri: item.photoURL }
             }
             style={styles.userPic}
-          />
+            imageStyle={styles.userPic}
+          >
+            {item.unread > 0 ?
+              (
+                <View style={{ width: '100%', alignItems: 'flex-end' }}>
+                  <View style={{ right: -12, top: -12, height: 24, width: 24, borderRadius: 12, backgroundColor: '#FE007A', justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ color: 'white' }}>{item.unread}</Text>
+                  </View>
+                </View>
+              )
+              :
+              null}
+
+          </ImageBackground>
           <Text style={styles.userName}>{item.displayName}</Text>
         </View>
 

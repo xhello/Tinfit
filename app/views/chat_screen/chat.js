@@ -223,6 +223,18 @@ export default class ChatScreen extends Component {
         }
       );
     // this.checkIsEligibleToReview(userListedIn, loggedUserId, userId);
+
+    this.markRead(loggedUserId, userId);
+  }
+
+  markRead = (loggedUserId, chatUserId) => {
+    firebase.database()
+      .ref()
+      .child('/conversations/' + loggedUserId + '/' + chatUserId)
+      .update({
+        unread: 0
+      })
+
   }
 
   checkIsEligibleToReview = (userListedIn, loggedUserId, chatUserId) => {
@@ -595,6 +607,8 @@ export default class ChatScreen extends Component {
 
   }
 
+
+
   parse = snapshot => {
     console.log(snapshot.val());
     // const { timestamp: numberStamp, text, user } = snapshot.val();
@@ -659,6 +673,21 @@ export default class ChatScreen extends Component {
           "/chats"
         )
         .push(message);
+
+
+
+
+      var databaseRef = firebase.database()
+        .ref("/conversations/" +
+          this.state.chatUserId +
+          "/" +
+          this.state.loggedUserId
+        )
+        .child('unread');
+
+      databaseRef.transaction(function (unread) {
+        return (unread || 0) + 1;
+      });
     }
   };
 
