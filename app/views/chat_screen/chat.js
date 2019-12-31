@@ -36,7 +36,8 @@ export default class ChatScreen extends Component {
       isEligibleToReview: false,
       typedCommentText: '',
       isNewReview: true,
-      oldRatingValue: 0
+      oldRatingValue: 0,
+      fcmToken: null
     };
   }
 
@@ -178,6 +179,7 @@ export default class ChatScreen extends Component {
     var userListedIn = this.props.navigation.getParam("userListedIn");
     var userCodeToShow = this.props.navigation.getParam("userCode");
     var codeToRequest = this.props.navigation.getParam("codeToRequest");
+    var fcmToken = this.props.navigation.getParam("fcmToken", null)
 
     this.props.navigation.setParams({ title: userName, deleteConversation: this.askeToDelete, dropdownOnSelect: this.selectOption, userCodeToShow: userCodeToShow });
     console.warn("userListedIn #####", userListedIn);
@@ -189,7 +191,8 @@ export default class ChatScreen extends Component {
       userName: userName,
       userListedIn: userListedIn,
       userCodeToShow: userCodeToShow,
-      codeToRequest: codeToRequest
+      codeToRequest: codeToRequest,
+      fcmToken: fcmToken
 
     });
     user = firebase.auth().currentUser;
@@ -224,6 +227,7 @@ export default class ChatScreen extends Component {
       );
     // this.checkIsEligibleToReview(userListedIn, loggedUserId, userId);
 
+    setInterval(() => { this.markRead(loggedUserId, userId) }, 5000)
     this.markRead(loggedUserId, userId);
   }
 
@@ -675,8 +679,8 @@ export default class ChatScreen extends Component {
         .push(message);
 
 
-
-
+      this.sendPush(message.text)
+      //To increament other user's unread count
       var databaseRef = firebase.database()
         .ref("/conversations/" +
           this.state.chatUserId +
@@ -770,6 +774,48 @@ export default class ChatScreen extends Component {
         snackColor: color
       });
     }, 100);
+  };
+
+
+
+  sendPush = async (message) => {
+    let name = firebase.auth().currentUser.displayName;
+    let fcm_key = this.state.fcmToken
+    console.warn("KEY IS ", fcm_key)
+    if (fcm_key != null) {
+      try {
+        const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "key=AAAAsUTas5I:APA91bFQjCfp9qQh-QTU9IypqrWmuh98SJTJmH6bCieoWuV38VDDeKeiPbwGU5EwdkC5ZlPdMqXr1FRk5zALHBdT0MAHNykg6R8e23pupk6WmnRMrkd5ccFRqrZGZPRL35-y00zwL7fe"
+          },
+          body: JSON.stringify({
+            to: fcm_key,
+            data: {
+              body: message,
+              title: "New Message from " + name + "!",
+              sound: "Enabled",
+              icon: "default.png"
+            },
+            notification: {
+              body: message,
+              title: "New Message from " + name + "!",
+              sound: "Enabled",
+              icon: "default.png"
+            }
+          })
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        return responseJson;
+      }
+      catch (error) {
+        console.error(error);
+      }
+    }
+
   };
 
   render() {

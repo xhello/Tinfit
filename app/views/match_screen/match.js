@@ -337,16 +337,16 @@ export default class MatchScreen extends Component {
 
   };
 
-  didTapPhoto = (id, name, photo, code, codeToRequest, userListedIn) => {
+  didTapPhoto = (id, name, photo, code, codeToRequest, userListedIn, fcm) => {
     // updater functions are preferred for transactional updates
     // console.warn(id);
-    this.props.navigation.navigate("UserChat", { userId: id, loggedUserId: this.state.user.uid, userName: name, userAvatar: photo, userListedIn: userListedIn, userCode: code, codeToRequest: codeToRequest });
+    this.props.navigation.navigate("UserChat", { userId: id, loggedUserId: this.state.user.uid, userName: name, userAvatar: photo, userListedIn: userListedIn, userCode: code, codeToRequest: codeToRequest, fcmToken: fcm });
   };
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.cardView}
-        onPress={() => this.didTapPhoto(item.uid, item.displayName, item.photoURL, item.userCode, item.userCodeToRequest, item.userListedIn)}
+        onPress={() => this.didTapPhoto(item.uid, item.displayName, item.photoURL, item.userCode, item.userCodeToRequest, item.userListedIn, item.fcmToken)}
       >
         <View style={styles.cardViewLeftSideArea}>
 
