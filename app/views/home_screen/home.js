@@ -100,7 +100,14 @@ export default class HomeScreen extends Component {
 
     firebase.notifications().onNotification((notification) => {
       console.warn(firebase.notifications().getBadge())
-      firebase.notifications().setBadge(1000)
+      firebase.notifications().getBadge().then(val => {
+        console.warn(val)
+        if (val > 0)
+          firebase.notifications().setBadge(val + 1)
+        else
+          firebase.notifications().setBadge(1)
+
+      })
 
     })
     firebase
@@ -154,7 +161,10 @@ export default class HomeScreen extends Component {
             }
           }
         }
-        firebase.notifications().setBadge(totalUnreadCount)
+        if (totalUnreadCount) {
+          firebase.notifications().setBadge(totalUnreadCount)
+
+        }
       })
   }
   getCrossedUsers = () => {

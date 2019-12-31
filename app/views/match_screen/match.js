@@ -282,7 +282,7 @@ export default class MatchScreen extends Component {
         var indexInRequestedBackList = _.findIndex(requestedBackClientList, (o) => { return o.uid == item.uid; });
         console.log("indexInRequestedList - ", indexInRequestedList);
         if (index > -1 && indexInRequestedList > -1) {
-          clientList[index].price = requestedBackClientList[indexInRequestedList].currentPrice;
+          clientList[index].price = requestedTrainerList[indexInRequestedList] ? requestedBackClientList[indexInRequestedList].currentPrice : 0;
           clientList[index].userCode = requestedClientList[indexInRequestedList].userCode;
           clientList[index].userCodeToRequest = requestedBackClientList[indexInRequestedBackList].userCode;
           clientList[index].userListedIn = "Clients"
@@ -296,7 +296,7 @@ export default class MatchScreen extends Component {
         var indexInRequestedList = _.findIndex(requestedTrainerList, (o) => { return o.uid == item.uid; });
         var indexInRequestedBackList = _.findIndex(requestedBackTrainerList, (o) => { return o.uid == item.uid; });
         if (index > -1 && indexInRequestedList > -1) {
-          trainerList[index].price = requestedTrainerList[indexInRequestedList].currentPrice;
+          trainerList[index].price = requestedTrainerList[indexInRequestedList] ? requestedTrainerList[indexInRequestedList].currentPrice : 0;
           trainerList[index].userCode = requestedTrainerList[indexInRequestedList].userCode;
           trainerList[index].userCodeToRequest = requestedBackTrainerList[indexInRequestedBackList].userCode;
           trainerList[index].userListedIn = "Trainers"
@@ -331,16 +331,59 @@ export default class MatchScreen extends Component {
       }
     }
 
-    firebase.notifications().setBadge(unreadCount)
+    if (unreadCount) {
+      firebase.notifications().setBadge(unreadCount)
+    }
     console.warn(clientList, trainerList)
 
     this.setState({
       trainerList: trainerList,
       clientList: clientList,
       isLoading: false
+    }, () => {
+      this.unreadCountListener()
     });
 
   };
+
+  unreadCountListener = () => {
+    firebase.database().ref()
+      .child("conversations/" + this.state.user.uid).on('value', snap => {
+        let trainerList = this.state.trainerList;
+        let clientList = this.state.clientList;
+        // let totalUnreadCount = 0;
+        console.warn(snap.val())
+        if (snap.val()) {
+          let keys = Object.keys(snap.val())
+          console.warn(keys)
+          for (let i = 0; i < keys.length - 1; i++) {
+            console.warn("User " + keys[i] + " has " + snap.val()[keys[i]].unread + " unreads")
+            // if (snap.val()[keys[i]].unread) {
+            //   totalUnreadCount += parseInt(snap.val()[keys[i]].unread)
+            // }
+
+            for (let j = 0; j < trainerList.length; j++) {
+              console.warn("UID is " + trainerList[j].uid)
+              if (trainerList[j].uid === keys[i]) {
+                trainerList[j].unread = snap.val()[keys[i]].unread
+              }
+            }
+
+            for (let j = 0; j < clientList.length; j++) {
+              console.warn("UID is " + clientList[j].uid)
+              if (clientList[j].uid === keys[i]) {
+                clientList[j].unread = snap.val()[keys[i]].unread
+              }
+            }
+          }
+          this.setState({
+            trainerList: trainerList,
+            clientList: clientList
+          })
+        }
+
+      })
+  }
 
   didTapPhoto = (id, name, photo, code, codeToRequest, userListedIn, fcm) => {
     // updater functions are preferred for transactional updates
@@ -457,6 +500,7 @@ export default class MatchScreen extends Component {
         {this.state.selectedTabIndex == 0 &&
           <View style={styles.trainerView}>
             <FlatList
+              extraData={this.state}
               data={this.state.trainerList}
               renderItem={this.renderItem}
               keyExtractor={item => item.uid}
@@ -470,6 +514,7 @@ export default class MatchScreen extends Component {
         {this.state.selectedTabIndex == 1 &&
           <View style={styles.clientView}>
             <FlatList
+              extraData={this.state}
               data={this.state.clientList}
               renderItem={this.renderItem}
               keyExtractor={item => item.uid}

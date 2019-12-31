@@ -217,7 +217,7 @@ export default class ChatScreen extends Component {
             this.setState(previousState => ({
               messages: GiftedChat.append(previousState.messages, message)
             }));
-
+            this.markRead(loggedUserId, userId)
           });
           console.log("####################", this.state.messages);
         },
@@ -227,7 +227,6 @@ export default class ChatScreen extends Component {
       );
     // this.checkIsEligibleToReview(userListedIn, loggedUserId, userId);
 
-    setInterval(() => { this.markRead(loggedUserId, userId) }, 5000)
     this.markRead(loggedUserId, userId);
   }
 
