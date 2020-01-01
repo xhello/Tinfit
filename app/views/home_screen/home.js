@@ -905,31 +905,37 @@ export default class HomeScreen extends Component {
     } else {
       var price = item.user.myClientProfile.price
     }
-    return (
+    console.warn("IMAGE URL", item.user.photoURL)
+    if (item.user.photoURL) {
 
-      <HomeCard
-        onPressPhoto={() => this.didTapPhoto(item.user.uid, this.state.user.uid, price)}
-        onPressRequest={() => this.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
-        onPressMessage={() => this.didTapMessageButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
-        onPressCrossUser={() => this.crossUser(item.user.uid, this.state.user.uid)}
+      return (
+
+        <HomeCard
+          onPressPhoto={() => this.didTapPhoto(item.user.uid, this.state.user.uid, price)}
+          onPressRequest={() => this.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
+          onPressMessage={() => this.didTapMessageButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)}
+          onPressCrossUser={() => this.crossUser(item.user.uid, this.state.user.uid)}
 
 
 
 
-        userImage={
-          item.user.photoURL
-            ? { uri: item.user.photoURL }
-            : require("../../res/images/default_user.png")
-        }
-        name={item.user.displayName}
-        isGymEnable={item.user.isGymAccess}
-        rating={ratingToShow}
-        isClientListing={!this.state.isUserLookingPT}
-        price={"$" + price}
-        messageText={item.user.message}
-        isShowMessage={!this.state.isShowAllUsers}
-      />
-    );
+          userImage={
+            item.user.photoURL
+              ? { uri: item.user.photoURL }
+              : require("../../res/images/default_user.png")
+          }
+          name={item.user.displayName}
+          isGymEnable={item.user.isGymAccess}
+          rating={ratingToShow}
+          isClientListing={!this.state.isUserLookingPT}
+          price={"$" + price}
+          messageText={item.user.message}
+          isShowMessage={!this.state.isShowAllUsers}
+        />
+      );
+
+    }
+
   };
 
   renderEmptyContainer = () => {
@@ -954,7 +960,16 @@ export default class HomeScreen extends Component {
         <NavigationEvents onWillFocus={this.onTabFocus} />
 
         {this.state.mapScreen ? (
-          <MapScreen lat={this.state.userLat} lng={this.state.userLon} />
+          <MapScreen
+            lat={this.state.userLat}
+            lng={this.state.userLon}
+            userList={this.state.userList}
+            didTapPhoto={(v1, v2, v3) => this.didTapPhoto(v1, v2, v3)}
+            didTapRequestButton={(v1, v2, v3, v4) => { this.didTapRequestButton(v1, v2, v3, v4) }}
+            didTapMessageButton={(v1, v2, v3, v4) => { this.didTapMessageButton(v1, v2, v3, v4) }}
+            crossUser={(v1, v2) => { this.crossUser(v1, v2) }}
+            uid={this.state.user.uid}
+          />
         )
           :
           (
