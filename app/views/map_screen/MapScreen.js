@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, Image } from 'react-native'
 import styles from './style'
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 
 
@@ -24,7 +24,7 @@ export default class MapScreen extends Component {
                     let keys = Object.keys(snap.val())
                     for (let i = 0; i < keys.length; i++) {
                         if (usersData[keys[i]].location) {
-                            markers.push(usersData[keys[i]].location)
+                            markers.push(usersData[keys[i]])
                         }
                     }
                     this.setState({
@@ -50,10 +50,29 @@ export default class MapScreen extends Component {
                 >
                     {this.state.markers.map(marker => (
                         <Marker
-                            coordinate={{ latitude: marker.lat, longitude: marker.lon }}
+                            coordinate={{ latitude: marker.location.lat, longitude: marker.location.lon }}
+                            onPress={() => { console.warn(marker.photoURL) }}
                         // title={marker.title}
                         // description={marker.description}
-                        />
+                        >
+                            {marker.photoURL ?
+                                (
+                                    // <Callout>
+                                    //     <Text style={{ zIndex: 100, height: 100, width: 100 }}>
+                                    //         <Image source={{ uri: marker.photoURL }} style={{ height: 100, width: 100, zIndex: 10000 }} />
+                                    //     </Text>
+                                    // </Callout>
+                                    <View style={{ height: 50, width: 50, borderRadius: 25, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+                                        <Image source={{ uri: marker.photoURL }}
+                                            style={{ width: 44, height: 44, borderRadius: 22, }}
+                                        />
+                                    </View>
+
+                                )
+                                :
+                                null}
+
+                        </Marker>
                     ))}
 
                 </MapView>
