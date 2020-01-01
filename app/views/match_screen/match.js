@@ -385,16 +385,16 @@ export default class MatchScreen extends Component {
       })
   }
 
-  didTapPhoto = (id, name, photo, code, codeToRequest, userListedIn, fcm) => {
+  didTapPhoto = (id, name, photo, code, codeToRequest, userListedIn, fcm, price) => {
     // updater functions are preferred for transactional updates
     // console.warn(id);
-    this.props.navigation.navigate("UserChat", { userId: id, loggedUserId: this.state.user.uid, userName: name, userAvatar: photo, userListedIn: userListedIn, userCode: code, codeToRequest: codeToRequest, fcmToken: fcm });
+    this.props.navigation.navigate("UserChat", { userId: id, loggedUserId: this.state.user.uid, userName: name, userAvatar: photo, userListedIn: userListedIn, userCode: code, codeToRequest: codeToRequest, fcmToken: fcm, price: price });
   };
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={styles.cardView}
-        onPress={() => this.didTapPhoto(item.uid, item.displayName, item.photoURL, item.userCode, item.userCodeToRequest, item.userListedIn, item.fcmToken)}
+        onPress={() => this.didTapPhoto(item.uid, item.displayName, item.photoURL, item.userCode, item.userCodeToRequest, item.userListedIn, item.fcmToken, item.price)}
       >
         <View style={styles.cardViewLeftSideArea}>
 
@@ -423,7 +423,7 @@ export default class MatchScreen extends Component {
         </View>
 
         <View style={styles.cardViewRightSideArea}>
-          <Text style={styles.price}>{item.userCode}</Text>
+          <Text style={styles.price}>${item.price}</Text>
           <Image
             style={styles.forwardArrow}
             source={require("../../res/images/foward_arrow_icon.png")}

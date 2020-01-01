@@ -13,11 +13,13 @@ import MatchScreen from "../views/match_screen/match";
 import UserDetailScreen from "../views/user_detail_screen/user_detail";
 import MatchUserDetailScreen from "../views/user_detail_screen/match_user_detail";
 import UserChatScreen from "../views/chat_screen/chat";
+import MatchUserDetailUnmatchedScreen from "../views/userDetailUnmatchedScreen/match_user_detail";
 
 const HomeTab = createStackNavigator(
   {
     Home: HomeScreen,
-    UserDetail: UserDetailScreen
+    UserDetail: UserDetailScreen,
+    MatchUserDetailUnmatched: MatchUserDetailUnmatchedScreen
   },
   {
     headerLayoutPreset: "center"
@@ -38,7 +40,7 @@ const MatchTab = createStackNavigator(
     Match: MatchScreen,
     UserDetail: UserDetailScreen,
     MatchUserDetail: MatchUserDetailScreen,
-    UserChat:UserChatScreen
+    UserChat: UserChatScreen
   },
   {
     headerLayoutPreset: "center"
@@ -46,7 +48,7 @@ const MatchTab = createStackNavigator(
 );
 
 const TabNavigator = createBottomTabNavigator(
-  {    
+  {
     Profile: ProfileTab,
     Home: HomeTab,
     Match: MatchTab
@@ -113,7 +115,7 @@ const TabNavigator = createBottomTabNavigator(
       activeTintColor: "#FE007A",
       inactiveTintColor: "#FDD8EA"
     },
-    initialRouteName:'Home'
+    initialRouteName: 'Home'
   }
 );
 
@@ -123,12 +125,12 @@ MatchTab.navigationOptions = ({ navigation }) => {
 
   let routeName = navigation.state.routes[navigation.state.index].routeName
 
-  if ( routeName == 'UserChat' ) {
-      tabBarVisible = false
+  if (routeName == 'UserChat') {
+    tabBarVisible = false
   }
 
   return {
-      tabBarVisible,
+    tabBarVisible,
   }
 }
 

@@ -828,7 +828,9 @@ export default class HomeScreen extends Component {
     console.log("id: ", id)
     console.log("id: ", loggedId)
     var price = this.state.isUserLookingPT ? currentPrice : this.state.userPrice;
-    this.props.navigation.navigate("UserDetail", { userId: id, loggedUserId: loggedId, isUserLookingPT: this.state.isUserLookingPT, currentPriceToSet: price });
+    // this.props.navigation.navigate("UserDetail", { userId: id, loggedUserId: loggedId, isUserLookingPT: this.state.isUserLookingPT, currentPriceToSet: price });
+    this.props.navigation.navigate("MatchUserDetailUnmatched", { userId: id, userListedIn: "Trainer" });
+
   };
 
   didTapMessageButton = (id, fcm_key, name, currentPrice) => {

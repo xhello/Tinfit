@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Text, View, Image } from 'react-native'
 import styles from './style'
-import MapView, { Marker, Callout } from 'react-native-maps';
+import MapView, { Marker, Callout, MarkerAnimated } from 'react-native-maps';
 import firebase from 'react-native-firebase';
+import { withNavigation } from 'react-navigation';
 
 
-export default class MapScreen extends Component {
+class MapScreen extends Component {
     state = {
         markers: []
     }
@@ -24,7 +25,9 @@ export default class MapScreen extends Component {
                     let keys = Object.keys(snap.val())
                     for (let i = 0; i < keys.length; i++) {
                         if (usersData[keys[i]].location) {
-                            markers.push(usersData[keys[i]])
+                            let m = usersData[keys[i]]
+                            m.key = keys[i]
+                            markers.push(m)
                         }
                     }
                     this.setState({
@@ -51,7 +54,9 @@ export default class MapScreen extends Component {
                     {this.state.markers.map(marker => (
                         <Marker
                             coordinate={{ latitude: marker.location.lat, longitude: marker.location.lon }}
-                            onPress={() => { console.warn(marker.photoURL) }}
+                            onPress={() => {
+                                this.props.navigation.navigate("MatchUserDetailUnmatched", { userId: marker.key, userListedIn: "Trainer" });
+                            }}
                         // title={marker.title}
                         // description={marker.description}
                         >
@@ -80,3 +85,5 @@ export default class MapScreen extends Component {
         )
     }
 }
+
+export default withNavigation(MapScreen)
