@@ -320,6 +320,9 @@ export default class ChatScreen extends Component {
         })
         .then(() => {
           console.warn("isEligibleToReview updated");
+          this.setState({
+            isShowReviewAlert: true
+          })
         })
         .catch(function (error) {
           console.error(error);
@@ -347,6 +350,9 @@ export default class ChatScreen extends Component {
         })
         .then(() => {
           console.warn("isEligibleToReview updated");
+          this.setState({
+            isShowReviewAlert: true
+          })
         })
         .catch(function (error) {
           console.error(error);
@@ -902,6 +908,8 @@ export default class ChatScreen extends Component {
               <KeyboardAvoidingView behavior="position">
                 <View style={styles.reviewModal}>
                   <Text style={styles.reviewModalTitleFont}>Your review code id {this.state.userCodeToShow}</Text>
+                  <Text style={[styles.reviewModalTitleFont, { color: 'black' }]}>Please ask the user for their review code</Text>
+
                   <View style={styles.commentArea}>
                     <TextInput textAlign={'center'} value={this.state.typedUserCode} maxLength={4} placeholder={"Enter 4 digit code"} keyboardType='number-pad' style={styles.userCodeBox} onChangeText={(text) => { this.setState({ typedUserCode: text }) }} />
                   </View>
