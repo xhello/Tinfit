@@ -95,11 +95,13 @@ export default class HomeScreen extends Component {
 
   onTabFocus = () => {
     this.setState({
-      isLoading: true
+      isLoading: true,
+      mapScreen: false
+
     }, () => {
       this.props.navigation.setParams({
         switchValue: false,
-        renderMap: this.renderMap
+        renderMap: this.renderMap,
       });
     });
     this.readChangeData();

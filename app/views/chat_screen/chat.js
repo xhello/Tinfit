@@ -519,6 +519,8 @@ export default class ChatScreen extends Component {
           uid: loggedUserId
         })
         .then(() => {
+          this.sendPushRating()
+
           this._showSnackBar("Your review added successfully", "green");
         })
         .catch(function (error) {
@@ -556,6 +558,7 @@ export default class ChatScreen extends Component {
           uid: loggedUserId
         })
         .then(() => {
+          this.sendPushRating()
           this._showSnackBar("Your review added successfully", "green");
         })
         .catch(function (error) {
@@ -590,6 +593,7 @@ export default class ChatScreen extends Component {
           totalReviews: totalReviewsToUpdate
         })
         .then(() => {
+
           this._showSnackBar("Your review added successfully", "green");
         })
         .catch(function (error) {
@@ -607,6 +611,7 @@ export default class ChatScreen extends Component {
 
         })
         .then(() => {
+
           this._showSnackBar("Your review added successfully", "green");
         })
         .catch(function (error) {
@@ -615,6 +620,47 @@ export default class ChatScreen extends Component {
     }
 
   }
+
+
+  sendPushRating = async () => {
+    let name = firebase.auth().currentUser.displayName;
+    let fcm_key = this.state.fcmToken
+    console.warn("PUSH TYPE=REVIEW  KEY IS ", fcm_key)
+    if (fcm_key != null) {
+      try {
+        const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "key=AAAAsUTas5I:APA91bFQjCfp9qQh-QTU9IypqrWmuh98SJTJmH6bCieoWuV38VDDeKeiPbwGU5EwdkC5ZlPdMqXr1FRk5zALHBdT0MAHNykg6R8e23pupk6WmnRMrkd5ccFRqrZGZPRL35-y00zwL7fe"
+          },
+          body: JSON.stringify({
+            to: fcm_key,
+            data: {
+              body: "You have a new Review from " + name,
+              title: "New Review !",
+              sound: "Enabled",
+              icon: "default.png"
+            },
+            notification: {
+              body: "You have a new Review from " + name,
+              title: "New Review !",
+              sound: "Enabled",
+              icon: "default.png"
+            }
+          })
+        });
+        const responseJson = await response.json();
+        console.log(responseJson);
+        return responseJson;
+      }
+      catch (error) {
+        console.error(error);
+      }
+    }
+
+  };
 
 
 
