@@ -894,14 +894,17 @@ export default class HomeScreen extends Component {
   renderItem = ({ item }) => {
     console.log("#####################@@@@@@@@@@@@@ - ", item.user.myTrainerProfile.price);
     var ratingToShow = 0;
+    let ratingCount = 0;
     if (this.state.isUserLookingPT) {
       if (item.user.myTrainerProfile != undefined) {
         console.log("#####################@@@@@@@@@@@@@****** - ");
         ratingToShow = item.user.myTrainerProfile.rating != null ? item.user.myTrainerProfile.rating : 0
+        ratingCount = item.user.myTrainerProfile.totalReviews !== null ? item.user.myTrainerProfile.totalReviews : 0
       }
     } else {
       if (item.user.myClientProfile != undefined) {
         ratingToShow = item.user.myClientProfile.rating != null ? item.user.myClientProfile.rating : 0
+        ratingCount = item.user.myClientProfile.totalReviews !== null ? item.user.myClientProfile.totalReviews : 0
       }
     }
     if (this.state.isUserLookingPT) {
@@ -935,6 +938,7 @@ export default class HomeScreen extends Component {
           price={"$" + price}
           messageText={item.user.message}
           isShowMessage={!this.state.isShowAllUsers}
+          ratingCount={ratingCount}
         />
       );
 

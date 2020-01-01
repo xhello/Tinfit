@@ -41,9 +41,9 @@ class HomeCard extends Component {
   didTapMessage = () => {
     this.props.onPressMessage(this.props.id);
   };
-  crossUser=()=>{
-  
-    this.props.onPressCrossUser(this.props.id,this.props.userID);
+  crossUser = () => {
+
+    this.props.onPressCrossUser(this.props.id, this.props.userID);
   }
 
 
@@ -65,15 +65,15 @@ class HomeCard extends Component {
           }} >
             <View style={{ justifyContent: "flex-start", width: '80%' }}>
               <TouchableOpacity
-              
-              onPress={this.didTapPhoto}
-              
-              style={{
-                borderRadius: 10, 
-                // backgroundColor: '#CFD7E1',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
+
+                onPress={this.didTapPhoto}
+
+                style={{
+                  borderRadius: 10,
+                  // backgroundColor: '#CFD7E1',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
 
 
 
@@ -82,7 +82,7 @@ class HomeCard extends Component {
                 <Image source={this.props.userImage} resizeMode="cover" style={{
                   // marginLeft:10,
                   width: '100%', height: 225,
-                  borderRadius:10,
+                  borderRadius: 10,
                 }} />
               </TouchableOpacity>
             </View>
@@ -90,11 +90,11 @@ class HomeCard extends Component {
             <View style={{ marginLeft: 10, justifyContent: 'flex-end', width: '20%' }}>
 
 
-            <TouchableOpacity
+              <TouchableOpacity
                 onPress={this.crossUser}
 
                 style={{
-                   marginBottom: 10, backgroundColor: '#e2e2e2', height: 50, width: 50, justifyContent: 'center', alignItems: 'center',
+                  marginBottom: 10, backgroundColor: '#e2e2e2', height: 50, width: 50, justifyContent: 'center', alignItems: 'center',
 
                   borderRadius: 10,
 
@@ -102,8 +102,8 @@ class HomeCard extends Component {
 
 
                 <Icon
-                      name={"remove"}
-                      type={"FontAwesome"}
+                  name={"remove"}
+                  type={"FontAwesome"}
                   style={{ fontSize: 30, color: 'grey' }}
 
                 />
@@ -203,6 +203,7 @@ class HomeCard extends Component {
 
 
               {this.createStars(this.props.rating)}
+              <Text>{this.props.ratingCount ? this.props.ratingCount : "0"}</Text>
             </View>
           </View>
 
@@ -228,16 +229,16 @@ class HomeCard extends Component {
             width: Dimensions.get("window").width - 40
           }} >
             <View style={{ justifyContent: "flex-start", width: '80%' }}>
-            <TouchableOpacity
-              
-              onPress={this.didTapPhoto}
-              
-              style={{
-                borderRadius: 10, 
-                // backgroundColor: '#CFD7E1',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
+              <TouchableOpacity
+
+                onPress={this.didTapPhoto}
+
+                style={{
+                  borderRadius: 10,
+                  // backgroundColor: '#CFD7E1',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}>
 
 
 
@@ -246,7 +247,7 @@ class HomeCard extends Component {
                 <Image source={this.props.userImage} resizeMode="cover" style={{
                   // marginLeft:10,
                   width: '100%', height: 225,
-                  borderRadius:10,
+                  borderRadius: 10,
                 }} />
               </TouchableOpacity>
             </View>
@@ -254,12 +255,12 @@ class HomeCard extends Component {
             <View style={{ marginLeft: 10, justifyContent: 'flex-end', width: '20%' }}>
 
 
-            <TouchableOpacity
-                 onPress={this.crossUser}
+              <TouchableOpacity
+                onPress={this.crossUser}
 
                 style={{
-                  
-                   marginBottom: 10, backgroundColor: '#e2e2e2', height: 50, width: 50, justifyContent: 'center', alignItems: 'center',
+
+                  marginBottom: 10, backgroundColor: '#e2e2e2', height: 50, width: 50, justifyContent: 'center', alignItems: 'center',
 
                   borderRadius: 10,
 
@@ -275,7 +276,7 @@ class HomeCard extends Component {
 
               </TouchableOpacity>
 
-              <View style={{marginBottom:10,backgroundColor: '#e2e2e2', width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 10, }}>
+              <View style={{ marginBottom: 10, backgroundColor: '#e2e2e2', width: 50, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 10, }}>
                 <Text style={styles.priceFont}>{this.props.price === '$undefined' ? 0 : this.props.price}</Text>
               </View>
 
@@ -355,6 +356,8 @@ class HomeCard extends Component {
 
 
               {this.createStars(this.props.rating)}
+              <Text>{this.props.ratingCount ? this.props.ratingCount : "0"}</Text>
+
             </View>
           </View>
 

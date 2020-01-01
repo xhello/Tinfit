@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { Text, View, ScrollView, Image, TouchableOpacity, AsyncStorage } from 'react-native'
 import styles from "./style";
 import firebase from 'react-native-firebase';
 
@@ -10,6 +10,7 @@ export default class CustomDrawer extends Component {
     }
 
     componentDidMount() {
+
         console.warn("PROPS", this.props.screenProps)
         const user = firebase.auth().currentUser
 
@@ -106,7 +107,7 @@ export default class CustomDrawer extends Component {
                     </View>
                     <TouchableOpacity
                         style={styles.logoutButton}
-                        onPress={() => signOutAsync(props)}
+                        onPress={() => this.signOutAsync()}
                     >
                         <Text style={styles.logoutButtonFont}>LOGOUT</Text>
                     </TouchableOpacity>

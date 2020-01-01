@@ -430,7 +430,12 @@ export default class MatchUserDetailUnmatchedScreen extends Component {
           <View style={styles.nameRow}>
             <Text style={styles.nameFont}>{this.state.displayName}</Text>
           </View>
-          <View style={styles.ratingRow}>{this.createStars()}</View>
+          <View style={styles.ratingRow}>
+            {this.createStars()}
+            <Text style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>
+              {this.state.selectedTabIndex == 0 ? this.state.reviewsByTrainers.length : this.state.reviewsByClients.length}
+            </Text>
+          </View>
           {/* <View style={styles.symbolRow}>
             <Text>{this.state.summaryRating}</Text>
           </View> */}
