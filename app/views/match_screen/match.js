@@ -423,7 +423,7 @@ export default class MatchScreen extends Component {
         </View>
 
         <View style={styles.cardViewRightSideArea}>
-          <Text style={styles.price}>${item.price}</Text>
+          <Text style={styles.price}>{item.userCode}</Text>
           <Image
             style={styles.forwardArrow}
             source={require("../../res/images/foward_arrow_icon.png")}
