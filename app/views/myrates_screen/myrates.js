@@ -59,7 +59,7 @@ export default class RateScreen extends Component {
         </View>
         <View style={styles.rightArea}>
           <View style={styles.arrowArea}>
-            <Image style={styles.arrow} source={isActive? require("../../res/images/up_arrow_icon.png") : require("../../res/images/down_arrow_icon.png")}/>
+            <Image style={styles.arrow} source={isActive ? require("../../res/images/up_arrow_icon.png") : require("../../res/images/down_arrow_icon.png")} />
           </View>
         </View>
 
@@ -196,6 +196,49 @@ export default class RateScreen extends Component {
     });
   }
 
+  createStarsHeader = () => {
+    let reviews;
+    if (this.state.selectedTabIndex == 0) {
+      reviews = this.state.reviewsByTrainers
+    }
+    else {
+      reviews = this.state.reviewsByClients;
+    }
+    let rating = 0
+    for (let i = 0; i < reviews.length; i++) {
+      console.warn(reviews[i])
+      rating += reviews[i].rating;
+    }
+    let stars = [];
+    if (rating > 0) {
+      rating = rating / reviews.length
+
+    }
+
+    console.warn("rating is ", rating)
+    for (let i = 0; i < rating; i++) {
+      stars.push(
+        <Image
+          source={require("../../res/images/star_filled.png")}
+          style={styles.star}
+          key={i}
+        />
+      );
+    }
+    for (let i = 0; i < 5 - rating; i++) {
+      stars.push(
+        <Image
+          source={require("../../res/images/star_empty.png")}
+          style={styles.star}
+          key={i + 5}
+        />
+      );
+    }
+    return stars;
+
+  }
+
+
   render() {
     const { activeSections, multipleSelect } = this.state;
     return (
@@ -206,6 +249,11 @@ export default class RateScreen extends Component {
           textStyle={styles.spinnerTextStyle}
           color={"#FE007A"}
         />
+        <View style={styles.ratingRow}>{this.createStarsHeader()}
+          <Text style={{ paddingHorizontal: 5, fontWeight: 'bold' }}>
+            {this.state.selectedTabIndex == 0 ? this.state.reviewsByTrainers.length : this.state.reviewsByClients.length}
+          </Text>
+        </View>
         <View style={styles.segmentRow}>
           <TouchableOpacity
             onPress={() => this.setState({ selectedTabIndex: 0 })}

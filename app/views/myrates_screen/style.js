@@ -4,61 +4,68 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    alignItems:'center'    
+    alignItems: 'center'
   },
-  reviewRow:{
-    width:'100%',
-    height:50,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'flex-start',
-    backgroundColor:'#EEEEEE',
-    marginTop:5,
-    borderRadius:5
+  ratingRow: {
+    flexDirection: 'row',
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10
   },
-  leftArea:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'flex-start',
-    width:'90%'
+  reviewRow: {
+    width: '100%',
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#EEEEEE',
+    marginTop: 5,
+    borderRadius: 5
   },
-  rightArea:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'flex-end',
-    paddingRight:15,
+  leftArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '90%'
+  },
+  rightArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 15,
     // backgroundColor:'yellow',
-    width:'10%'
+    width: '10%'
   },
-  reviewArea:{
-    width:'90%',
-    alignItems:'center'
+  reviewArea: {
+    width: '90%',
+    alignItems: 'center'
   },
-  commentArea:{
-    minWidth:'100%',
+  commentArea: {
+    minWidth: '100%',
     paddingLeft: 20,
-    paddingRight:20,
-    paddingTop:5,
-    paddingBottom:5,
-    backgroundColor:'#EEEEEE44',
-    marginBottom:5    
+    paddingRight: 20,
+    paddingTop: 5,
+    paddingBottom: 5,
+    backgroundColor: '#EEEEEE44',
+    marginBottom: 5
   },
-  userImageOnReview:{
-    width:30,
-    height:30,
-    borderRadius:15,
-    marginRight:20,
-    marginLeft:20
+  userImageOnReview: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 20,
+    marginLeft: 20
   },
-  arrowArea:{
-    width:25,
-    height:25,
-    justifyContent:'center',
-    alignItems:'center'
+  arrowArea: {
+    width: 25,
+    height: 25,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  arrow:{
-    width:25,
-    height:25
+  arrow: {
+    width: 25,
+    height: 25
   },
   title: {
     textAlign: 'center',
@@ -78,7 +85,7 @@ export default StyleSheet.create({
   content: {
     padding: 20,
     backgroundColor: '#fff',
-    width:'100%'
+    width: '100%'
   },
   active: {
     backgroundColor: 'rgba(255,255,255,1)',
@@ -113,88 +120,88 @@ export default StyleSheet.create({
     fontSize: 16,
     marginRight: 8,
   },
-  segmentRow:{
-    flexDirection:'row' ,
-    height:45,
-    width:'90%',
-    marginTop:10,
-    marginBottom:20
-    
-  },
-  trainerSegment:{
-    width:'50%',
-    height:45,
-    borderBottomLeftRadius:10,
-    borderTopLeftRadius:10,
-    borderColor:'#FE007A',
-    borderWidth:1,
-    justifyContent:'center',
-    alignItems:'center'
+  segmentRow: {
+    flexDirection: 'row',
+    height: 45,
+    width: '90%',
+    marginTop: 10,
+    marginBottom: 20
 
   },
-  clientSegment:{
-    width:'50%',
-    height:45,
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,
-    borderColor:'#FE007A',
-    borderWidth:1,
-    justifyContent:'center',
-    alignItems:'center'
-  },
-  trainerSegmentActive:{
-    width:'50%',
-    height:45,
-    borderBottomLeftRadius:10,
-    borderTopLeftRadius:10,
-    backgroundColor:'#FE007A',
-    justifyContent:'center',
-    alignItems:'center'
+  trainerSegment: {
+    width: '50%',
+    height: 45,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+    borderColor: '#FE007A',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
 
   },
-  clientSegmentActive:{
-    width:'50%',
-    height:45,
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,
-    backgroundColor:'#FE007A',
-    justifyContent:'center',
-    alignItems:'center'
+  clientSegment: {
+    width: '50%',
+    height: 45,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    borderColor: '#FE007A',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  segmentText:{
-    fontSize:16,
-    color:'#FE007A'
+  trainerSegmentActive: {
+    width: '50%',
+    height: 45,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+    backgroundColor: '#FE007A',
+    justifyContent: 'center',
+    alignItems: 'center'
+
   },
-  segmentTextActive:{
-    fontSize:16,
-    color:'#FFFFFF'
+  clientSegmentActive: {
+    width: '50%',
+    height: 45,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    backgroundColor: '#FE007A',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  starRatingArea:{
+  segmentText: {
+    fontSize: 16,
+    color: '#FE007A'
+  },
+  segmentTextActive: {
+    fontSize: 16,
+    color: '#FFFFFF'
+  },
+  starRatingArea: {
     // backgroundColor:'red',
-    width:150,
-    height:30,
-    flexDirection:'row',
-    justifyContent:'space-between'
+    width: 150,
+    height: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
-  star:{
-    width:25,
-    height:25,
-    marginRight:2,
-    marginLeft:2
+  star: {
+    width: 25,
+    height: 25,
+    marginRight: 2,
+    marginLeft: 2
   },
-  spinnerTextStyle:{
-    fontSize:14,
-    color:'#FE007A'
+  spinnerTextStyle: {
+    fontSize: 14,
+    color: '#FE007A'
   },
-  notFoundMessage:{
-    position:'absolute',
-    top:'50%',
-    alignItems:'center',
-    height:200,
-    justifyContent:'flex-end'
+  notFoundMessage: {
+    position: 'absolute',
+    top: '50%',
+    alignItems: 'center',
+    height: 200,
+    justifyContent: 'flex-end'
   },
-  notFoundMessageFont:{
-    fontSize:12,
-    color:'#4D4D4D'
+  notFoundMessageFont: {
+    fontSize: 12,
+    color: '#4D4D4D'
   }
 });

@@ -52,7 +52,7 @@ export default class ChatScreen extends Component {
         backgroundColor: colors.header
       },
       headerLeft: <BackIcon />,
-      headerRight: <ModalDropdown dropdownStyle={{ marginRight: 0, width: 100, height: 33 * 4 }} options={["$" + navigation.state.params.price, 'Review', 'Profile', 'Disconnect']} onSelect={(index) => navigation.getParam("dropdownOnSelect")(index)}>
+      headerRight: <ModalDropdown dropdownTextStyle={{ fontWeight: 'bold', fontSize: 13 }} dropdownStyle={{ marginRight: 0, width: 100, height: 37 * 4 }} options={["$" + navigation.state.params.price, 'Review', 'Profile', 'Disconnect']} onSelect={(index) => navigation.getParam("dropdownOnSelect")(index)}>
         <Image
           style={{ width: 30, height: 30, marginRight: 25 }}
           source={require("../../res/images/more_icon.png")}

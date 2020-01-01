@@ -124,10 +124,14 @@ export default class HomeScreen extends Component {
       console.warn(firebase.notifications().getBadge())
       firebase.notifications().getBadge().then(val => {
         console.warn(val)
-        if (val > 0)
-          firebase.notifications().setBadge(val + 1)
-        else
-          firebase.notifications().setBadge(1)
+        console.warn(notification.data)
+        if (notification.data.title.search('New Message from') > -1) {
+          if (val > 0)
+            firebase.notifications().setBadge(val + 1)
+          else
+            firebase.notifications().setBadge(1)
+        }
+
 
       })
 
