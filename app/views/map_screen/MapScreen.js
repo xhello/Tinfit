@@ -40,7 +40,7 @@ export default class MapScreen extends Component {
                 <MapView
                     style={styles.map}
                     showsUserLocation={true}
-                    followsUserLocation={true}
+                    // followsUserLocation={true}
                     initialRegion={{
                         latitude: this.props.lat,
                         longitude: this.props.lng,

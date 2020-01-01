@@ -16,8 +16,8 @@ target 'Tinfit' do
 
   # pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+ # pod 'react-native-maps', :path => '../node_modules/react-native-maps'
 
 end
