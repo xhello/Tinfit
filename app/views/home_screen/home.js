@@ -374,7 +374,7 @@ export default class HomeScreen extends Component {
         const { navigation } = this.props;
         navigation.setParams({
           showMessagedUsers: this.showMessagedUsers,
-          switchValue: false,
+          // switchValue: false,
           isUserLookingPT: this.state.isUserLookingPT
         });
         this.updateUserLocation();
@@ -483,6 +483,15 @@ export default class HomeScreen extends Component {
                 );
 
                 //Updating Filtered Out Users in state
+                ///REMOVING USERS WITH NO IMAGE
+                for (let k = 0; k < filteredAndCrossedUsers.length; k++) {
+
+                  if (!filteredAndCrossedUsers[k].user.photoURL) {
+                    filteredAndCrossedUsers.splice(k, 1)
+                  }
+                }
+                ///REMOVING USERS WITH NO IMAGE
+
 
                 this.setState({
                   allUsersToShow: filteredAndCrossedUsers,
@@ -979,11 +988,13 @@ export default class HomeScreen extends Component {
             didTapMessageButton={(v1, v2, v3, v4) => { this.didTapMessageButton(v1, v2, v3, v4) }}
             crossUser={(v1, v2) => { this.crossUser(v1, v2) }}
             uid={this.state.user.uid}
+            isUserLookingPT={this.state.isUserLookingPT}
+            readChangeData={() => this.readChangeData()}
           />
         )
           :
           (
-            <View>
+            <View style={{ width: '100%', padding: 0, margin: 0, height: '100%' }}>
               <Spinner
                 visible={this.state.isLoading}
                 textContent={"Loading ..."}

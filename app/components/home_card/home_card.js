@@ -48,7 +48,7 @@ class HomeCard extends Component {
 
 
   render() {
-    console.log("Props: ", this.props.isClientListing)
+    console.warn("The type of list is clientListing? ", this.props.isClientListing)
 
     if (this.props.isClientListing) {
       return (

@@ -5,6 +5,8 @@ import MapView, { Marker, Callout, MarkerAnimated } from 'react-native-maps';
 import firebase from 'react-native-firebase';
 import { withNavigation } from 'react-navigation';
 import HomeCard from '../../components/home_card/home_card';
+import SnackBar from "react-native-snackbar-component";
+import _ from "lodash";
 
 
 
@@ -12,35 +14,219 @@ class MapScreen extends Component {
     state = {
         markers: [],
         showDetailsModal: false,
-        selectedItem: null
+        selectedItem: null,
+        isShowError: false,
+        errorToShow: "",
+        snackColor: "red"
     }
 
-    componentDidMount() {
-        this.getLocations()
-        // console.warn(this.props.userList[0].user)
-    }
 
-    getLocations = () => {
-        firebase.database().ref()
-            .child('/users/')
-            .on('value', snap => {
-                let markers = []
-                if (snap.val()) {
-                    let usersData = snap.val()
-                    let keys = Object.keys(snap.val())
-                    for (let i = 0; i < keys.length; i++) {
-                        if (usersData[keys[i]].location) {
-                            let m = usersData[keys[i]]
-                            m.key = keys[i]
-                            markers.push(m)
+    didTapRequestButton = (id, fcm_key, name, currentPrice) => {
+        console.warn("called")
+        var randomUserCode = Math.floor(1000 + Math.random() * 9000);
+        var listToAddLoggedUser = this.props.isUserLookingPT ? "Clients" : "Trainers";
+        var listToAddUser = this.props.isUserLookingPT ? "Trainers" : "Clients";
+
+        if (this.props.isUserLookingPT) {
+            firebase
+                .database()
+                .ref("relationships/" + listToAddLoggedUser + "/" + this.props.uid + "/requested")
+                .child(id)
+                .set({
+                    uid: id,
+                    currentPrice: currentPrice, //CHECK
+                    userCode: randomUserCode
+                })
+                .then(() => {
+                    // Get Requested back list
+                    firebase
+                        .database()
+                        .ref()
+                        .child("relationships/" + listToAddLoggedUser + "/" + this.props.uid + "/requestedBack")
+                        .once(
+                            "value",
+                            snapshot => {
+                                const requestedBackUsers = _.map(snapshot.val(), user => {
+                                    return { user };
+                                });
+                                var index = _.findIndex(requestedBackUsers, (o) => { return o.user.uid == id; });
+                                console.log("----ID----", index);
+                                if (index > -1) {
+                                    this._showSnackBar("You have a match with " + name, "#4c8bf5");
+                                    this.sendPush(fcm_key);
+                                } else {
+                                    this._showSnackBar("Request sent successfully", "green");
+                                }
+                                this.props.readChangeData();
+                            },
+                            error => {
+                                console.warn("Error: " + error.message);
+                            }
+                        );
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+
+            firebase
+                .database()
+                .ref("relationships/" + listToAddUser + "/" + id + "/requestedBack")
+                .child(this.props.uid)
+                .set({
+                    uid: this.props.uid,
+                    currentPrice: currentPrice, //CHECK
+                    userCode: randomUserCode
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        } else {
+            firebase
+                .database()
+                .ref("relationships/" + listToAddLoggedUser + "/" + this.props.uid + "/requested")
+                .child(id)
+                .set({
+                    uid: id,
+                    userCode: randomUserCode
+                })
+                .then(() => {
+                    // Get Requested back list
+                    firebase
+                        .database()
+                        .ref()
+                        .child("relationships/" + listToAddLoggedUser + "/" + this.props.uid + "/requestedBack")
+                        .once(
+                            "value",
+                            snapshot => {
+                                const requestedBackUsers = _.map(snapshot.val(), user => {
+                                    return { user };
+                                });
+                                var index = _.findIndex(requestedBackUsers, (o) => { return o.user.uid == id; });
+                                if (index > -1) {
+                                    this._showSnackBar("You have a match with " + name, "#4c8bf5");
+                                    this.sendPush(fcm_key);
+                                } else {
+                                    this._showSnackBar("Request sent successfully", "green");
+                                }
+                                this.props.readChangeData();
+                            },
+                            error => {
+                                console.warn("Error: " + error.message);
+                            }
+                        );
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+
+            firebase
+                .database()
+                .ref("relationships/" + listToAddUser + "/" + id + "/requestedBack")
+                .child(this.props.uid)
+                .set({
+                    uid: this.props.uid,
+                    userCode: randomUserCode
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        }
+
+
+    };
+
+    _showSnackBar = (message, color) => {
+        this.setState({
+            isShowError: false
+        });
+        setTimeout(() => {
+            this.setState({
+                isShowError: true,
+                errorToShow: message,
+                snackColor: color
+            });
+        }, 100);
+    };
+
+
+
+
+
+    sendPush = async (fcm_key) => {
+        let name = firebase.auth().currentUser
+        console.log("------------SEND PUSH------------");
+        if (fcm_key != null) {
+            try {
+                const response = await fetch("https://fcm.googleapis.com/fcm/send", {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: "key=AAAAsUTas5I:APA91bFQjCfp9qQh-QTU9IypqrWmuh98SJTJmH6bCieoWuV38VDDeKeiPbwGU5EwdkC5ZlPdMqXr1FRk5zALHBdT0MAHNykg6R8e23pupk6WmnRMrkd5ccFRqrZGZPRL35-y00zwL7fe"
+                    },
+                    body: JSON.stringify({
+                        to: fcm_key,
+                        data: {
+                            body: "We found a new matching for you with " + name,
+                            title: "New Matching for you!",
+                            sound: "Enabled",
+                            icon: "default.png"
+                        },
+                        notification: {
+                            body: "We found a new matching for you with " + name,
+                            title: "New Matching for you!",
+                            sound: "Enabled",
+                            icon: "default.png"
                         }
-                    }
-                    this.setState({
-                        markers: markers
                     })
-                }
+                });
+                const responseJson = await response.json();
+                console.log("----------------RESPONSE--------- ", responseJson);
+                return responseJson;
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+
+    crossUser = (userId) => {
+
+        // const filteredUser = this.state.allUsersToShow.filter((user)=>{
+        //   console.log("User Id: ",user.user.uid)
+        //   return user.user.uid !== id1
+        // })
+
+
+        var role = this.props.isUserLookingPT
+            ? "Trainers"
+            : "Clients";
+
+
+
+        // console.log("crossUser called: ", isUserLookingPT)
+
+        firebase
+            .database()
+            .ref()
+            .child("users/" + this.props.uid + `/ignore/${role}`)
+            .child(userId)
+            .set({
+                uid: userId
             })
+            .then((res) => {
+
+                this.props.readChangeData();
+
+                console.log("Crossed response is: ", res)
+            }).catch((err) => {
+                console.log("Crossed Error: ", err)
+            })
+
     }
+
+
 
     renderItem = () => {
         let item = this.state.selectedItem;
@@ -48,7 +234,7 @@ class MapScreen extends Component {
         var ratingToShow = 0;
         let ratingCount = 0;
 
-        if (this.state.isUserLookingPT) {
+        if (this.props.isUserLookingPT) {
             if (item.user.myTrainerProfile != undefined) {
                 console.log("#####################@@@@@@@@@@@@@****** - ");
                 ratingToShow = item.user.myTrainerProfile.rating != null ? item.user.myTrainerProfile.rating : 0
@@ -62,7 +248,7 @@ class MapScreen extends Component {
 
             }
         }
-        if (this.state.isUserLookingPT) {
+        if (this.props.isUserLookingPT) {
             var price = item.user.myTrainerProfile.price
         } else {
             var price = item.user.myClientProfile.price
@@ -80,7 +266,7 @@ class MapScreen extends Component {
                     })
                 }}
                 onPressRequest={() => {
-                    this.props.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)
+                    this.didTapRequestButton(item.user.uid, item.user.fcmToken, item.user.displayName, price)
                     this.setState({
                         showDetailsModal: false,
                         selectedItem: null
@@ -112,7 +298,7 @@ class MapScreen extends Component {
                 name={item.user.displayName}
                 isGymEnable={item.user.isGymAccess}
                 rating={ratingToShow}
-                isClientListing={!this.state.isUserLookingPT}
+                isClientListing={!this.props.isUserLookingPT}
                 price={"$" + price}
                 messageText={item.user.message}
                 isShowMessage={!this.state.isShowAllUsers}
@@ -193,6 +379,13 @@ class MapScreen extends Component {
                         </View>
                     </TouchableWithoutFeedback>
                 </Modal>
+
+                <SnackBar
+                    visible={this.state.isShowError}
+                    autoHidingTime={2000}
+                    backgroundColor={this.state.snackColor}
+                    textMessage={this.state.errorToShow}
+                />
             </View>
         )
     }
